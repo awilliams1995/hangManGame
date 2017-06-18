@@ -1,0 +1,131 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<body>
+	
+	<div id="game">
+    <p>Press any letter to start playing</p>
+	</div>
+
+
+<script>
+
+
+console.log("welcome to hangman! Get ready to rumble! below see the amount of letters that you the unknown word has");
+
+var setOfWords = ["Chicken", "Martin", "Weather"];
+
+var characters = [];
+
+var lines = [];
+
+var guesses = [];
+
+var chances = 12;//plan on changing the scope of this variable later on
+
+var wins = 0;
+
+var losses = 0;
+
+function generateRandomWord(){
+
+	var randomWord = setOfWords[Math.floor(Math.random() * setOfWords.length)];
+
+	console.log(randomWord.length);
+
+	//console.log(randomWord);
+
+	      for (var i = 0; i < randomWord.length; i++) {
+
+	      	characters.push(randomWord.toLowerCase().charAt(i));
+	      	lines.push("_");
+	      	
+
+      };
+
+//console.log(characters);
+
+console.log(lines);
+
+};
+
+
+
+generateRandomWord();
+
+ document.onkeyup = function(){
+
+ 	var guess = event.key;
+
+ 	console.log("see your guess below");
+ 	console.log(guess);
+
+//this for loop is cross referencing the letter pressed with every element in the random array created containing every letter in the random word chosen when the program was launched to see if any of them match. 
+ 	for(var i = 0; i < characters.length; i++) {
+          
+
+ 		if (guess === characters[i] && guesses.includes(guess) === false){
+
+ 			correctGuess = characters[i];
+ 			lines[i] = characters[i];
+ 			console.log(lines);
+ 			console.log(guesses);
+ 		}
+
+
+
+
+
+ 	}
+
+ 	 	 	 var html =
+          "<p>You chose: " + guess + "</p>" + "<p>word:</p>" +lines.join(' ')+
+          "<p>Wins: </p>" + wins + "<p>Losses: </p>" + losses;	
+
+ 	document.querySelector("#game").innerHTML = html;  
+
+
+
+
+		//this if loop is here in order to cross reference every letter that has been pressed with what was pressed the current time in order to alert the user that they have already selected the input before 	 	 	
+ 	 	if(guesses.includes(guess) === true){
+
+			var html2 = "<p>You already chose: " + guess + " please choose something else </p>"
+			+ "<p>word</p>" + lines.join(' ') + "<p>Wins: </p>" + wins + "<p>Losses: </p>" + losses;																				
+
+ 			document.querySelector("#game").innerHTML = html2;
+
+
+ 		} 	
+
+
+ 		if(characters === lines){
+
+ 			wins++;
+
+ 		}
+ 			guesses.push(guess.toLowerCase());
+ 
+
+ }
+
+
+
+
+//document.onkeyup = function(event){
+
+
+
+
+
+//}	
+
+
+
+
+</script>
+	
+</body>
+</html>
