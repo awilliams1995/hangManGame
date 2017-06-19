@@ -25,105 +25,201 @@ var guesses = [];
 
 var chances = 12;//plan on changing the scope of this variable later on
 
-var wins = 0;
+var correctGuesses = 0;
 
 var losses = 0;
 
-function generateRandomWord(){
+var wins = 0;
 
-	var randomWord = setOfWords[Math.floor(Math.random() * setOfWords.length)];
+var guess = "";
 
-	console.log(randomWord.length);
+var wordNumber = wins + losses +1;
 
-	//console.log(randomWord);
+var correctLetterForRun = "";
 
-	      for (var i = 0; i < randomWord.length; i++) {
+var chances = (6 + (Math.floor(characters.length/2)));
 
-	      	characters.push(randomWord.toLowerCase().charAt(i));
-	      	lines.push("_");
-	      	
+			function generateRandomWord(){
 
-      };
+							var randomWord = setOfWords[Math.floor(Math.random() * setOfWords.length)];
 
-//console.log(characters);
+							console.log(randomWord.length);
 
-console.log(lines);
+							//console.log(randomWord);
 
-};
+							      for (var i = 0; i < randomWord.length; i++) {
+							      		//
+							      		characters.push(randomWord.toLowerCase().charAt(i));
+							      		//
+							      		lines.push("_");
+							      		//
+							      	
+
+						      		}//ends for loop 
+
+						console.log(lines);
+
+			};//ends generateRandomWord
+
+				function restartGame(){
+
+										if(confirm("do you wanna play again?")){
+
+										console.log("welcome to hangman! Get ready to rumble! below see the amount of letters that you the unknown word has");
+
+										characters = [];
+
+										lines = [];
+
+										guesses = [];
+
+										correctGuesses = 0;
+
+										generateRandomWord();
+
+										wordNumber++;
+
+										chances = (6 + (Math.floor(characters.length/2)));
 
 
+										alert("new word!");
 
-generateRandomWord();
+										var html4 = 
+												  "<p>word number:" + wordNumber+ "</p>"+
+												  "<p>You chose: " + guess + "</p>" + 
+										          "<p>word:</p>" + lines.join(' ')+ 
+										          "<p>Correct Guesses: " + correctGuesses+ "</p>" +
+										          "<p>Losses:" + losses +"</p>" +
+										          "<p>wins: " + wins + "</p>"+	
+										          "<p>chances: " + chances + "</p>";
+
+
+										 			document.querySelector("#game").innerHTML = html4;
+										}
+
+						};// ends restart game function.
+
+
+					// generates a random word to start the program upon launch
+					generateRandomWord();
+					chances = (6 + (Math.floor(characters.length/2)));
 
  document.onkeyup = function(){
 
- 	var guess = event.key;
-
- 	console.log("see your guess below");
- 	console.log(guess);
-
-//this for loop is cross referencing the letter pressed with every element in the random array created containing every letter in the random word chosen when the program was launched to see if any of them match. 
- 	for(var i = 0; i < characters.length; i++) {
-          
-
- 		if (guess === characters[i] && guesses.includes(guess) === false){
-
- 			correctGuess = characters[i];
- 			lines[i] = characters[i];
- 			console.log(lines);
- 			console.log(guesses);
- 		}
+		 	if(correctGuesses == characters.length){
 
 
+		 		restartGame();
+		 	}
+		 	else{
 
+				 	guess = event.key.toLowerCase();
 
+				 	console.log("see your guess below");
+				 	console.log(guess);
 
- 	}
+				//this for loop is cross referencing the letter pressed with every element in the random array created containing every letter in the random word chosen when the program was launched to see if any of them match. 
+				 	for(var i = 0; i < characters.length; i++) {
+				          
 
- 	 	 	 var html =
-          "<p>You chose: " + guess + "</p>" + "<p>word:</p>" +lines.join(' ')+
-          "<p>Wins: </p>" + wins + "<p>Losses: </p>" + losses;	
+						 		if (guess === characters[i] && !guesses.includes(guess)){
 
- 	document.querySelector("#game").innerHTML = html;  
+						 			correctGuess = characters[i];
+						 			lines[i] = characters[i];
+						 			console.log(lines);
+						 			console.log(guesses);
+						 			correctGuesses++;
+						 			correctLetterForRun = characters[i];
+						 		}// ends if (guess === characters[i] && !guesses.includes(guess)){
 
 
 
 
-		//this if loop is here in order to cross reference every letter that has been pressed with what was pressed the current time in order to alert the user that they have already selected the input before 	 	 	
- 	 	if(guesses.includes(guess) === true){
 
-			var html2 = "<p>You already chose: " + guess + " please choose something else </p>"
-			+ "<p>word</p>" + lines.join(' ') + "<p>Wins: </p>" + wins + "<p>Losses: </p>" + losses;																				
-
- 			document.querySelector("#game").innerHTML = html2;
+				 	}//ends the for loop for(var i = 0; i < characters.length; i++)
 
 
- 		} 	
+				 	if (correctLetterForRun != guess && !guesses.includes(guess)){
+
+				 			chances--;
 
 
- 		if(characters === lines){
+				 	}
 
- 			wins++;
+						if(correctGuesses == characters.length) {
 
- 		}
- 			guesses.push(guess.toLowerCase());
- 
+						 		wins++;
 
+						 		var html3 = 
+
+								  "<p>word number:" + wordNumber+ "</p>"+
+								  "<p>You chose: " + guess + "</p>" + 
+						          "<p>word:</p>" +lines.join(' ')+
+						          "<p>Correct Guesses: " + correctGuesses+ "</p>" +
+						          "<p>Losses:" + losses +"</p>" +
+						          "<p>wins: " + wins + "</p>"+	
+						          "<p>chances: " + chances + "</p>";
+						 			document.querySelector("#game").innerHTML = html3; 
+
+						 		
+				 
+
+
+				 		}// ends if(correctGuesses == characters.length)	
+
+				 		else{
+							 	 	 	 var html =
+									  "<p>word number:" + wordNumber+ "</p>"+
+									  "<p>You chose: " + guess + "</p>" + 
+							          "<p>word:</p>" +lines.join(' ')+
+							          "<p>Correct Guesses: " + correctGuesses+ "</p>" +
+							          "<p>Losses:" + losses +"</p>" +
+							          "<p>wins: " + wins + "</p>"+	
+							          "<p>chances: " + chances + "</p>";		
+
+							 	document.querySelector("#game").innerHTML = html;  
+
+
+
+
+									//this if loop is here in order to cross reference every letter that has been pressed with what was pressed the current time in order to alert the user that they have already selected the input before 	 	 	
+							 	 	if(guesses.includes(guess)){
+
+										var html2 = 
+								      "<p>word number:" + wordNumber+ "</p>"+
+									  "<p><strong>You already chose: " + guess+"</strong></p>"+
+									  "<p> please choose something else </p>"+ 
+									  "<p>You chose: " + guess + "</p>" + 
+							          "<p>word:</p>" +lines.join(' ')+
+							          "<p>Correct Guesses: " + correctGuesses+ "</p>" +
+							          "<p>Losses:" + losses +"</p>" +
+							          "<p>wins: " + wins + "</p>"+	
+							          "<p>chances: " + chances + "</p>";																		
+
+							 			document.querySelector("#game").innerHTML = html2;
+
+
+				 			}// ends else else{ var html = 
+
+
+			guesses.push(guess);
+
+				//this if statement is here in order to check whether or not the chances ==0 in order to know whether or not to launch a new game
+				if(chances == 0){
+
+					losses++;
+					var html5 =
+					"<h1>You Lost!</h1> <br><h4> Try again to redeem yourself and win back<br>your honor as the hangman champion of the world!</h4>";
+					restartGame();
+
+				}
+
+
+		 	}//ends the else statement placed after the if statement checking whether or not the correct guesses matches the character length of the chosen word
+
+
+		}//ends the if statement checking whether or not the correct guesses matches the character length of the chosen word
  }
-
-
-
-
-//document.onkeyup = function(event){
-
-
-
-
-
-//}	
-
-
-
 
 </script>
 	
