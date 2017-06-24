@@ -210,7 +210,7 @@ var valuesToDisplay =
 		 		"<p>Correct Guesses: " + this.correctGuesses+ "</p>" +
 		 		"<p>Losses:" + this.losses +"</p>" +
 		 		"<p>wins: " + this.wins + "</p>"+	
-		 		"<p>Wrong guess chances: " + this.chances + "</p>" +
+		 		"<p>Wrong guess chances: " +  this.chances + "</p>" +
 		 		"<p>Words you have guessed correctly:</p>" + this.listOfWords.join("<br>");
 
 
@@ -302,29 +302,29 @@ this.randomWord = this.setOfWords[Math.floor(Math.random() * this.setOfWords.len
 
 				resetPerRoundValues : function(){
 
-					if(this.setOfWords.length != 0){
+					if(hangManGame.setOfWords.length != 0){
 
 										if(confirm("do you wanna play again?")){
 										
-										this.characters = [];
+										hangManGame.characters = [];
 
-										this.lines = [];
+										hangManGame.lines = [];
 
-										this.guesses = [];
+										hangManGame.guesses = [];
 
 										timer = 10;
 
-										this.correctGuesses = 0;
+										hangManGame.correctGuesses = 0;
 
-										this.generateRandomWordAndLines();
+										hangManGame.generateRandomWordAndLines();
 
-										this.wordNumber++;
+										hangManGame.wordNumber++;
 
-										this.chances = 12;
+										hangManGame.chances = 12;
 
 										alert("new word!");
 
-										this.displayValues();
+										hangManGame.displayValues();
 
 										}//ends if statement
 
@@ -362,7 +362,8 @@ this.randomWord = this.setOfWords[Math.floor(Math.random() * this.setOfWords.len
 		 			else{
 
 				 	for(var i = 0; i < hangManGame.characters.length; i++) {
-				if (hangManGame.guess == hangManGame.characters[i] && !hangManGame.guesses.includes(hangManGame.guess)){
+				if (hangManGame.guess == hangManGame.characters[i] && !hangManGame.guesses.includes(hangManGame.guess))
+				{
 				hangManGame.lines[i] = hangManGame.characters[i];
 				hangManGame.correctGuesses++;
 				timer = 10;
@@ -375,7 +376,7 @@ this.randomWord = this.setOfWords[Math.floor(Math.random() * this.setOfWords.len
 				hangManGame.youJustGotACorrectWord();
 			} 
 
-			else if(!hangManGame.thisWasACorrectGuess){	
+			if(!hangManGame.thisWasACorrectGuess){	
 				hangManGame.wrongGuess();
 			}
 				//adds the guess for this round go the
@@ -385,9 +386,13 @@ this.randomWord = this.setOfWords[Math.floor(Math.random() * this.setOfWords.len
 				else{
 					alert("that is not a valid key to press, don't be silly, this word is in english, not unicode, by the way, you lose a chance for that");
 				}	
+				
 				if(hangManGame.chances == 0){
+
 					hangManGame.ranOutOfChances();
+
 				}
+
 				hangManGame.displayValues();
 
 				//this if statement is here in order to check whether or not the chances ==0 in order to know whether or not to launch a new game
