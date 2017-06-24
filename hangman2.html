@@ -1,0 +1,404 @@
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<style>
+		.hide{
+	display:none;
+		}
+
+		.image{
+			background-image: url("phi.jpg");
+			height: 100vh;
+			width: 100vw;
+			background-size: cover;
+			position: absolute;
+		}
+
+		h1{
+			font-size:6em;
+			color: white;
+			text-align: center;
+
+		}
+
+
+	</style>
+</head>
+		<body>
+		<div id="hide">
+		<span id="hint">Hint: Philosophy</span><br>
+		<span id="gameTimer"></span>
+			<br>
+			<span id="timer"></span><br><span id="disclaimer"> countdown from 10 above, get at least one letter right before that runs out, you better work well under pressure!</span>
+
+		</div>
+		
+
+	</div>
+	<div id="game">
+    <p>Press any letter to start playing</p>
+	</div>
+
+
+<script>
+
+console.log("welcome to hangman! Get ready to rumble! below see the amount of letters that you the unknown word has");
+var alphabet = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+var timer = 10;
+var dateUponLaunch = new Date().getTime();
+ var minutes = 0;
+  var tenSeconds = 0;
+  var seconds = 0;
+
+function secondTimer(){
+
+	var thisRun = new Date().getTime() ;
+
+  minutes = Math.floor(( thisRun % dateUponLaunch)/(1000*60));
+  tenSeconds = Math.floor(((( thisRun % dateUponLaunch)/1000)/10)%6);
+  seconds = Math.floor((( thisRun % dateUponLaunch)/1000)%10);
+
+  timer--;
+
+  document.getElementById("gameTimer").innerHTML = "Game Time :" + minutes + ":"+tenSeconds+ seconds + " s ";
+
+};//global function secondTimer();
+
+ function timeReducer(){
+
+	if(hangManGame.correctGuesses == hangManGame.randomWord.length){
+
+		hangManGame.displayValues();
+
+		}		
+	if(timer < 0) {
+		document.querySelector("#timer").innerHTML = Math.round(timer, -1);
+
+			hangManGame.losses++;
+			hangManGame.displayValues();
+			hangManGame.resetPerRoundValues();
+
+	}
+
+else{
+		document.querySelector("#timer").innerHTML = Math.round(timer, -1);
+}
+
+};
+
+var hangManGame = {
+
+setOfWords :  ["existentialism","epistemology", "esthetics", "morality", "metaphysics","logic","ethics","politics","axiology"],	
+
+characters : [],
+
+lines : [],
+
+guesses : [],
+
+listOfWords :[],//gonna sort these alpabetically, I know there is a predefined sort function already but I wanted to see if I could do it without using it. I know that this wouldn't be the way to go in the context of a real world project with a deadline but I wanted to challenge myself.
+
+chances : 12,
+
+correctGuesses : 0,
+
+losses : 0,
+
+wins : 0,
+
+guess : "",
+
+wordNumber : 1 ,
+
+correctLetterForRun : "",
+
+thisWasACorrectGuess : false,
+
+randomWord : "",
+
+needToTriggerTimer : true,
+
+longestString : "",
+
+gameWon : false,
+
+//gonna sort these alpabetically, I know there is a predefined sort function already but I wanted to see if I could do it without using it. I know that this wouldn't be the way to go in the context of a real world project with a deadline but I wanted to challenge myself further.
+
+sortTheWordsDoneInAlphOrder : function() {
+
+	for (var q = 0; q < this.listOfWords.length; q++) 
+{
+		if(hangManGame.listOfWords[q].length > hangManGame.longestString.length){
+			hangManGame.longestString = hangManGame.listOfWords[q];
+														
+														}
+													}
+
+	function organizeWordsByAssignedLetter(character){
+
+	for (var i = 0 ; i < hangManGame.listOfWords.length ; i++) {
+
+							
+		for (var z = i+1; z < hangManGame.listOfWords.length; z++) {
+
+			var allCharactersTillNowHaveBeenSame = 0;
+
+			if (character == 0) {
+				if (alphabet.indexOf(hangManGame.listOfWords[z].charAt(character)) < alphabet.indexOf(hangManGame.listOfWords[i].charAt(character))) { //1 works
+			var WordToSwap = hangManGame.listOfWords[z];
+		    hangManGame.listOfWords[z] = hangManGame.listOfWords[i];
+			hangManGame.listOfWords[i] = WordToSwap;
+			}
+
+			}
+
+			else if(character > 0){
+
+
+    			for (var y = 0 ; y < character; y++) {
+
+					if(hangManGame.listOfWords[i].charAt(y) == hangManGame.listOfWords[z].charAt(y)){
+
+						allCharactersTillNowHaveBeenSame++;
+
+					}
+				}
+
+
+
+
+			if (allCharactersTillNowHaveBeenSame == character){
+																		//left off here
+		if (alphabet.indexOf(hangManGame.listOfWords[z].charAt(character)) < alphabet.indexOf(hangManGame.listOfWords[i].charAt(character)) && alphabet.indexOf(hangManGame.listOfWords[i].charAt(character)) != -1) { //1 works
+
+			var WordToSwap = hangManGame.listOfWords[z];
+			//console.log(" round: " + character+ " comparing:" +listOfWords[i] + " run number or z " + z + " word number or i " + i + " swapping "+ listOfWords[i]+ " with " + WordToSwap);
+		    hangManGame.listOfWords[z] = hangManGame.listOfWords[i];
+			hangManGame.listOfWords[i] = WordToSwap;
+		//	console.log("now:");
+			//console.log(listOfWords.join("-"));
+			
+
+
+			}
+		}
+	}
+
+		}
+	}
+
+
+};
+
+for (var i = 0; i < hangManGame.longestString.length ; i++) {
+	organizeWordsByAssignedLetter(i);
+}
+
+
+
+},
+
+
+displayValues : function(){
+
+var valuesToDisplay =
+				"<p>word number: " + this.wordNumber+ "</p>"+
+		 		"<p>You chose: " + this.guess + "</p>" + 
+		 		"<p>word:</p>" + this.lines.join(' ')+
+		 		"<p>Letters already used:" + this.guesses.join() +  "</p>" + 
+		 		"<p>Correct Guesses: " + this.correctGuesses+ "</p>" +
+		 		"<p>Losses:" + this.losses +"</p>" +
+		 		"<p>wins: " + this.wins + "</p>"+	
+		 		"<p>Wrong guess chances: " + this.chances + "</p>" +
+		 		"<p>Words you have guessed correctly:</p>" + this.listOfWords.join("<br>");
+
+
+    //return document.createElement("span").innerText;
+
+if(!this.gameWon){
+document.querySelector("#game").innerHTML = valuesToDisplay;
+}
+else{
+var endGame = "<h1>I think Therefore I am!</h1>" + "<h1> You took " + minutes + ":"+tenSeconds + seconds +" To be enlightened</h1>" ;
+
+document.querySelector("#hide").setAttribute("class", "hide");
+document.querySelector("#game").innerHTML = endGame;
+document.querySelector("#game").setAttribute("class", "image");
+
+
+
+}
+},
+
+
+		//checks to see  if the word has already been chosen before
+//	if(this.guesses.includes(this.guess))
+youAlreadyChoseThisLetter : function(){
+
+	this.displayValues();
+	alert("you already chose: " + hangManGame.guess +" choose something else");
+	this.chances--;
+	timer = 10;
+},
+				//checks if you won to restart the game
+//	else if(this.correctGuesses == this.characters.length)
+
+	youJustGotACorrectWord : function(){
+
+		//	if(!this.listOfWords.includes(this.randomWord)){
+
+				var index = this.setOfWords.indexOf(this.randomWord);
+				if (index > -1) {
+   					 this.setOfWords.splice(index, 1);
+   								
+   							}
+
+
+   							console.log(this.setOfWords.join("-"));
+
+		var that = this;
+			this.wins++;
+			this.listOfWords.push(this.randomWord);
+			setTimeout(function (){that.sortTheWordsDoneInAlphOrder();}, 300);
+			setTimeout(function(){alert("congrats, you got the word right!")}, 100);
+			setTimeout(function (){that.resetPerRoundValues();}, 500);
+
+		 },
+
+//	ranOutOfTime : function(){
+//			this.losses--;
+//			this.displayValues();
+//			this.resetPerRoundValues();
+	
+//},
+
+
+	 ranOutOfChances : function(){
+
+			this.losses++;
+	        this.displayValues();
+	        setTimeout(hangManGame.resetPerRoundValues, 200);
+					},
+
+	wrongGuess : function(){
+			this.chances--;
+			this.displayValues();
+	},
+
+generateRandomWordAndLines : function(){
+this.randomWord = this.setOfWords[Math.floor(Math.random() * this.setOfWords.length)];
+
+	for (var i = 0; i < this.randomWord.length; i++) 
+		{					      		
+	this.characters.push(this.randomWord.toLowerCase().charAt(i));
+	console.log(this.randomWord);
+							      		
+	this.lines.push("_");
+	}
+
+
+			},//ends generateRandomWord
+
+				resetPerRoundValues : function(){
+
+					if(this.setOfWords.length != 0){
+
+										if(confirm("do you wanna play again?")){
+										
+										this.characters = [];
+
+										this.lines = [];
+
+										this.guesses = [];
+
+										timer = 10;
+
+										this.correctGuesses = 0;
+
+										this.generateRandomWordAndLines();
+
+										this.wordNumber++;
+
+										this.chances = 12;
+
+										alert("new word!");
+
+										this.displayValues();
+
+										}//ends if statement
+
+						}//ends the if statement
+
+						else{
+							this.gameWon = true;
+							alert("You Guessed all the words right!!!");
+							this.displayValues();
+
+						}
+					},//ends the object
+					};
+
+
+					// generates a random word to start the program upon launch
+					hangManGame.generateRandomWordAndLines();
+
+ 	   document.onkeyup = function(){
+
+ 	   					if(hangManGame.needToTriggerTimer == true){
+ 	   							dateUponLaunch = new Date().getTime();
+ 	   							setInterval(function(){if(!hangManGame.gameWon)timeReducer()}, 10);
+								setInterval(function(){if(!hangManGame.gameWon)secondTimer()}, 1000);
+								hangManGame.needToTriggerTimer = false;
+ 	   					}
+
+		 			 hangManGame.guess = event.key.toLowerCase();
+
+		 			if (hangManGame.guesses.includes(hangManGame.guess)){
+
+		 				hangManGame.youAlreadyChoseThisLetter();
+
+		 			}//ends the conditional if statement
+		 			else{
+
+				 	for(var i = 0; i < hangManGame.characters.length; i++) {
+				if (hangManGame.guess == hangManGame.characters[i] && !hangManGame.guesses.includes(hangManGame.guess)){
+				hangManGame.lines[i] = hangManGame.characters[i];
+				hangManGame.correctGuesses++;
+				timer = 10;
+				hangManGame.correctLetterForRun = hangManGame.characters[i];
+				hangManGame.thisWasACorrectGuess = true;
+					}//ends the if statement checking the letters repeatedly to see if they match the input
+					}//ends the for loop making that checking possible
+
+			if (hangManGame.correctGuesses == hangManGame.randomWord.length){
+				hangManGame.youJustGotACorrectWord();
+			} 
+
+			else if(!hangManGame.thisWasACorrectGuess){	
+				hangManGame.wrongGuess();
+			}
+				//adds the guess for this round go the
+				if (alphabet.includes(hangManGame.guess)) {
+				hangManGame.guesses.push(hangManGame.guess);
+				}
+				else{
+					alert("that is not a valid key to press, don't be silly, this word is in english, not unicode, by the way, you lose a chance for that");
+				}	
+				if(hangManGame.chances == 0){
+					hangManGame.ranOutOfChances();
+				}
+				hangManGame.displayValues();
+
+				//this if statement is here in order to check whether or not the chances ==0 in order to know whether or not to launch a new game
+				hangManGame.thisWasACorrectGuess = false;
+
+			}//ends the else
+
+
+}//ends the event
+ 
+</script>
+	
+</body>
+</html>
